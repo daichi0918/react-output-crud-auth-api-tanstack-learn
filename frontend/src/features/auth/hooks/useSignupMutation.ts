@@ -15,7 +15,9 @@ export const useSignupMutation = () => {
       password: string;
     }) => register(name, email, password),
     onSuccess: (data) => {
+      // setQueryData は、指定されたクエリキーに対してキャッシュされたデータを更新します。
       queryClient.setQueryData(['auth'], data);
+      // invalidateQueries は、指定されたクエリキーに関連するすべてのクエリを無効化します。
       queryClient.invalidateQueries({ queryKey: ['auth'] });
     },
   });

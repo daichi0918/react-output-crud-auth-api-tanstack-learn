@@ -25,6 +25,7 @@ export const useAuth = () => {
   const signIn = useCallback(
     (user: UserType, token: string) => {
       setAxiosAuthentication(token);
+      // クエリクライアントを使用して、'auth'キーのデータを更新します。
       queryClient.setQueryData(['auth'], { user, token });
       navigate(NAVIGATION_PATH.TOP);
     },
@@ -33,7 +34,15 @@ export const useAuth = () => {
 
   const signOut = useCallback(() => {
     removeAxiosAuthentication();
+    // キャッシュされたクエリデータを直接更新する。今回は'auth'キーのデータをnullに設定
+    // これにより、認証情報がクリアされ、再度ログインが必要になります。
     queryClient.setQueryData(['auth'], null);
+    // invalidateQueries は、指定されたクエリキーに関連するすべてのクエリを無効化します。
+    // これにより、次回のクエリ実行時に最新のデータを取得するようになります。
+    // ここでは、'auth'と'todos'のクエリを無効化しています。
+    // これにより、認証情報がクリアされた後、次回のクエリ実行時に再度認証情報を取得するようになります。
+    // また、'todos'のクエリも無効化することで、ログアウト後に表示されるTodo一覧が最新の状態になるようにします。
+    // これにより、ログアウト後にTodo一覧が表示されなくなります。
     queryClient.invalidateQueries({ queryKey: ['auth'] });
     queryClient.invalidateQueries({ queryKey: ['todos'] });
     navigate(NAVIGATION_PATH.LOGIN);
