@@ -1,7 +1,7 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode } from 'react';
 
-import { Navigation } from "../Navigation";
-import styles from "./style.module.css";
+import { Navigation } from '../Navigation';
+import styles from './style.module.css';
 
 type BaseLayoutProps = {
   children: ReactNode;

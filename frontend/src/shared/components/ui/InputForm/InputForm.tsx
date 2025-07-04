@@ -1,12 +1,12 @@
-import { FC, ComponentProps } from "react";
+import { FC, ComponentProps } from 'react';
 
-import styles from "./style.module.css";
+import styles from './style.module.css';
 
-type InputFormProps = ComponentProps<"input">;
+type InputFormProps = ComponentProps<'input'>;
 
 export const InputForm: FC<InputFormProps> = ({
   disabled = false,
-  type = "text",
+  type = 'text',
   value,
   placeholder,
   onChange,

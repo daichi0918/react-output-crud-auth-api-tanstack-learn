@@ -1,7 +1,7 @@
-import { FC, ComponentProps, ReactNode } from "react";
-import styles from "./style.module.css";
+import { FC, ComponentProps, ReactNode } from 'react';
+import styles from './style.module.css';
 
-type CommonButtonProps = ComponentProps<"button"> & {
+type CommonButtonProps = ComponentProps<'button'> & {
   children: ReactNode;
 };
 

@@ -1,14 +1,14 @@
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useAuthContext } from "../../../auth/hooks/useAuthContext";
-import { useLogin } from "../../hooks";
+import { useAuthContext } from '../../../auth/hooks/useAuthContext';
+import { useLogin } from '../../hooks';
 
 const schema = z.object({
-  email: z.string().email("メールアドレスの形式で入力してください"),
-  password: z.string().min(8, "8文字以上で入力してください"),
+  email: z.string().email('メールアドレスの形式で入力してください'),
+  password: z.string().min(8, '8文字以上で入力してください'),
 });
 
 export const useLoginTemplate = () => {
@@ -23,8 +23,8 @@ export const useLoginTemplate = () => {
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -35,9 +35,14 @@ export const useLoginTemplate = () => {
           const data = await loginMutation.mutateAsync(values);
           signIn(data.user, data.token);
         } catch (error) {
-          setError("email", {
-            type: "manual",
-            message: (error as unknown as {response?: {data?: {message?: string}}}).response?.data?.message || "ログインに失敗しました",
+          setError('email', {
+            type: 'manual',
+            message:
+              (
+                error as unknown as {
+                  response?: { data?: { message?: string } };
+                }
+              ).response?.data?.message || 'ログインに失敗しました',
           });
         }
       },

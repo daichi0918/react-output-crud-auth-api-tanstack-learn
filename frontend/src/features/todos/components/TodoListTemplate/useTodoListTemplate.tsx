@@ -1,9 +1,9 @@
-import { useMemo, useCallback } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useMemo, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useTodoList, useDeleteTodo } from "../../hooks";
+import { useTodoList, useDeleteTodo } from '../../hooks';
 
 const schema = z.object({
   keyword: z.string(),
@@ -15,15 +15,15 @@ export const useTodoListTemplate = () => {
 
   const { control, watch } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { keyword: "" },
+    defaultValues: { keyword: '' },
   });
-  const searchKeyword = watch("keyword");
+  const searchKeyword = watch('keyword');
 
   /* 表示用TodoList */
   const showTodoList = useMemo(() => {
     if (!todoData?.todos) return [];
-    
-    const regexp = new RegExp("^" + searchKeyword, "i");
+
+    const regexp = new RegExp('^' + searchKeyword, 'i');
     return todoData.todos.filter((todo) => {
       // 検索キーワードに部分一致したTodoだけを一覧表示する
       return todo.title.match(regexp);
@@ -34,11 +34,14 @@ export const useTodoListTemplate = () => {
     // 詳しくはuseMemoを調べてください。
   }, [todoData?.todos, searchKeyword]);
 
-  const handleDeleteTodo = useCallback((id: string, title: string) => {
-    if (window.confirm(`「${title}」のtodoを削除しますか？`)) {
-      deleteMutation.mutate({ id });
-    }
-  }, [deleteMutation]);
+  const handleDeleteTodo = useCallback(
+    (id: string, title: string) => {
+      if (window.confirm(`「${title}」のtodoを削除しますか？`)) {
+        deleteMutation.mutate({ id });
+      }
+    },
+    [deleteMutation]
+  );
 
   return {
     control,

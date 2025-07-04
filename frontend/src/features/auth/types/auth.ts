@@ -1,4 +1,4 @@
-import { UserType } from "../../users/types";
+import { UserType } from '../../users/types';
 
 export type AuthType = {
   token: string;

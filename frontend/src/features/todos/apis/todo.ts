@@ -1,4 +1,4 @@
-import globalAxios from "../../../shared/apis/globalAxios";
+import globalAxios from '../../../shared/apis/globalAxios';
 import {
   TodoListType,
   TodoType,
@@ -6,10 +6,10 @@ import {
   CreateTodoRequest,
   UpdateTodoRequest,
   DeleteTodoRequest,
-} from "../types";
+} from '../types';
 
 export const getTodos = async (): Promise<TodoListType> => {
-  const response = await globalAxios.get<TodoListType>("/todos");
+  const response = await globalAxios.get<TodoListType>('/todos');
   return response.data;
 };
 
@@ -18,12 +18,16 @@ export const getTodo = async (request: GetTodoRequest): Promise<TodoType> => {
   return response.data;
 };
 
-export const createTodo = async (request: CreateTodoRequest): Promise<TodoType> => {
-  const response = await globalAxios.post<TodoType>("/todos", request);
+export const createTodo = async (
+  request: CreateTodoRequest
+): Promise<TodoType> => {
+  const response = await globalAxios.post<TodoType>('/todos', request);
   return response.data;
 };
 
-export const updateTodo = async (request: UpdateTodoRequest): Promise<TodoType> => {
+export const updateTodo = async (
+  request: UpdateTodoRequest
+): Promise<TodoType> => {
   const response = await globalAxios.put<TodoType>(`/todos/${request.id}`, {
     title: request.title,
     content: request.content,

@@ -1,9 +1,9 @@
-import {  useQuery } from "@tanstack/react-query";
-import {  getTodo } from "../apis/todo";
+import { useQuery } from '@tanstack/react-query';
+import { getTodo } from '../apis/todo';
 
 export const useTodo = (id: string) => {
   return useQuery({
-    queryKey: ["todos", id],
+    queryKey: ['todos', id],
     queryFn: () => getTodo({ id }),
     enabled: !!id,
   });

@@ -1,11 +1,14 @@
-import { FC } from "react";
-import { Controller } from "react-hook-form";
+import { FC } from 'react';
+import { Controller } from 'react-hook-form';
 
-import { InputFormSection, CommonButton } from "../../../../shared/components/ui";
+import {
+  InputFormSection,
+  CommonButton,
+} from '../../../../shared/components/ui';
 
-import { useSignUpTemplate } from "./useSignUpTemplate";
+import { useSignUpTemplate } from './useSignUpTemplate';
 
-import styles from "./style.module.css";
+import styles from './style.module.css';
 
 export const SignUpTemplate: FC = () => {
   const { control, errors, handleRegisterSubmit } = useSignUpTemplate();
@@ -72,7 +75,7 @@ export const SignUpTemplate: FC = () => {
           />
         </div>
         <div className={styles.area}>
-          <CommonButton type="submit">{"Sign Up"}</CommonButton>
+          <CommonButton type="submit">{'Sign Up'}</CommonButton>
         </div>
       </form>
     </div>

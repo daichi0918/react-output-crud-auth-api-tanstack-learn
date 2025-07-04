@@ -1,11 +1,13 @@
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router';
+
+import { useUpdateTodo } from '../../hooks';
 import { NAVIGATION_PATH } from '../../../../shared/constants/navigation';
 
-import { useCreateTodo } from '../../hooks';
+import { TodoType } from '../../types';
 
 const schema = z.object({
   title: z
@@ -15,9 +17,14 @@ const schema = z.object({
   content: z.string().optional(),
 });
 
-export const useTodoCreateTemplate = () => {
+type UseTodoEditFormParam = {
+  todo: TodoType;
+};
+
+export const useTodoEditForm = ({ todo }: UseTodoEditFormParam) => {
   const navigate = useNavigate();
-  const createMutation = useCreateTodo();
+
+  const updateMutation = useUpdateTodo();
 
   const {
     control,
@@ -29,11 +36,12 @@ export const useTodoCreateTemplate = () => {
     defaultValues: { title: '', content: '' },
   });
 
-  const handleAddSubmit = handleSubmit(
+  const handleEditSubmit = handleSubmit(
     useCallback(
       async (values: z.infer<typeof schema>) => {
         try {
-          await createMutation.mutateAsync({
+          await updateMutation.mutateAsync({
+            id: todo.id,
             title: values.title,
             content: values.content,
           });
@@ -46,18 +54,18 @@ export const useTodoCreateTemplate = () => {
                 error as unknown as {
                   response?: { data?: { message?: string } };
                 }
-              ).response?.data?.message || '作成に失敗しました',
+              ).response?.data?.message || '更新に失敗しました',
           });
         }
       },
-      [navigate, createMutation, setError]
+      [navigate, todo, updateMutation, setError]
     )
   );
 
   return {
     control,
     errors,
-    handleAddSubmit,
-    isLoading: createMutation.isPending,
+    handleEditSubmit,
+    isSaving: updateMutation.isPending,
   };
 };

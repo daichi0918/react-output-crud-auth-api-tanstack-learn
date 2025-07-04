@@ -1,8 +1,8 @@
-import { FC, ComponentProps } from "react";
+import { FC, ComponentProps } from 'react';
 
-import styles from "./style.module.css";
+import styles from './style.module.css';
 
-type TextAreaProps = ComponentProps<"textarea">;
+type TextAreaProps = ComponentProps<'textarea'>;
 
 export const TextArea: FC<TextAreaProps> = ({
   disabled = false,

@@ -1,11 +1,11 @@
-import { NAVIGATION_LIST } from "../../../shared/constants/navigation";
-import { Routes, Route } from "react-router";
+import { NAVIGATION_LIST } from '../../../shared/constants/navigation';
+import { Routes, Route } from 'react-router';
 import {
   TodoCreatePage,
   TodoDetailPage,
   TodoEditPage,
   TodoListPage,
-} from "../../../pages";
+} from '../../../pages';
 
 export const TodoRouter = () => {
   return (

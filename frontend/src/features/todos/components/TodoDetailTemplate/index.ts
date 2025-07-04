@@ -1,1 +1,1 @@
-export * from "./TodoDetailTemplate";
+export * from './TodoDetailTemplate';

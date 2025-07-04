@@ -1,47 +1,17 @@
-import { Controller } from "react-hook-form";
+import { PuffLoader } from 'react-spinners';
+import { useParams } from 'react-router';
 
-import { BaseLayout } from "../../../../shared/components/layouts";
-import { InputFormSection, TextAreaSection, CommonButton } from "../../../../shared/components/ui";
-import { useTodoEditTemplate } from "./useTodoEditTemplate";
+import { useTodo } from '../../hooks';
 
-import styles from "./style.module.css";
+import { TodoEditForm } from '../TodoEditForm';
 
 export const TodoEditTemplate = () => {
-  const { control, errors, handleEditSubmit } = useTodoEditTemplate();
+  const { id } = useParams();
+  const { data: todo, isLoading } = useTodo(id || '');
 
-  return (
-    <BaseLayout title={"TodoEdit"}>
-      <form className={styles.container} onSubmit={handleEditSubmit}>
-        <div className={styles.area}>
-          <Controller
-            name="title"
-            render={({ field }) => (
-              <InputFormSection
-                placeholder={"Title"}
-                errorMessage={errors.title?.message}
-                {...field}
-              />
-            )}
-            control={control}
-          />
-        </div>
-        <div className={styles.area}>
-          <Controller
-            name="content"
-            render={({ field }) => (
-              <TextAreaSection
-                placeholder={"Content"}
-                errorMessage={errors.content?.message}
-                {...field}
-              />
-            )}
-            control={control}
-          />
-        </div>
-        <div className={styles.area}>
-          <CommonButton type="submit">{"Edit Todo"}</CommonButton>
-        </div>
-      </form>
-    </BaseLayout>
-  );
+  if (isLoading) {
+    return <PuffLoader />;
+  }
+
+  return <>{todo && <TodoEditForm todo={todo} />}</>;
 };

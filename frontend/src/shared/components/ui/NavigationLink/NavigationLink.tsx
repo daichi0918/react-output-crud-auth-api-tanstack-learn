@@ -1,6 +1,6 @@
-import { FC } from "react";
-import { NavLink } from "react-router";
-import styles from "./style.module.css";
+import { FC } from 'react';
+import { NavLink } from 'react-router';
+import styles from './style.module.css';
 
 type NavigationLinkProps = {
   title: string;

@@ -1,14 +1,14 @@
-import { useCallback, FC } from "react";
-import { useNavigate } from "react-router";
+import { useCallback, FC } from 'react';
+import { useNavigate } from 'react-router';
 import {
   faTrashAlt,
   faFile,
   faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { NAVIGATION_PATH } from "../../../../shared/constants/navigation";
-import { TodoType } from "../../types";
-import styles from "./style.module.css";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NAVIGATION_PATH } from '../../../../shared/constants/navigation';
+import { TodoType } from '../../types';
+import styles from './style.module.css';
 
 type TodoListProps = {
   todoList: Array<TodoType>;
