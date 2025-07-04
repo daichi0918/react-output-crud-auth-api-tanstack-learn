@@ -1,16 +1,16 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from 'axios';
 
 const BASE_API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 const getToken = () =>
-  localStorage.getItem("authentication")
-    ? localStorage.getItem("authentication")
+  localStorage.getItem('authentication')
+    ? localStorage.getItem('authentication')
     : null;
 
 const apiClient = axios.create({
   baseURL: BASE_API_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -28,12 +28,12 @@ apiClient.interceptors.request.use(
 );
 
 export const setAxiosAuthentication = (token: string) => {
-  localStorage.setItem("authentication", token);
+  localStorage.setItem('authentication', token);
   apiClient.defaults.headers.Authorization = `Bearer ${token}`;
 };
 
 export const removeAxiosAuthentication = () => {
-  localStorage.removeItem("authentication");
+  localStorage.removeItem('authentication');
   delete apiClient.defaults.headers.Authorization;
 };
 

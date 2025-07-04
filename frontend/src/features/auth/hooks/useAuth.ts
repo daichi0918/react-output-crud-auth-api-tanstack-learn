@@ -1,36 +1,52 @@
-import { useCallback, useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useCallback, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 
-import { NAVIGATION_PATH, NAVIGATION_LIST } from "../../../shared/constants/navigation";
+import {
+  NAVIGATION_PATH,
+  NAVIGATION_LIST,
+} from '../../../shared/constants/navigation';
 import {
   setAxiosAuthentication,
   removeAxiosAuthentication,
-} from "../../../shared/apis/globalAxios"
-import { checkAuthentication } from "../apis/auth";
-import { UserType } from "../../users/types";
+} from '../../../shared/apis/globalAxios';
+import { UserType } from '../../users/types';
+import { useCheckAuthenticationQuery } from './';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const useAuth = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [user, setUser] = useState<UserType | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { data: authData, isLoading } = useCheckAuthenticationQuery();
+
+  const user = authData?.user || null;
+  const isAuth = !!authData?.user;
 
   const signIn = useCallback(
     (user: UserType, token: string) => {
-      setUser(user);
-      setIsAuth(true);
       setAxiosAuthentication(token);
+      // クエリクライアントを使用して、'auth'キーのデータを更新します。
+      queryClient.setQueryData(['auth'], { user, token });
       navigate(NAVIGATION_PATH.TOP);
     },
-    [navigate]
+    [navigate, queryClient]
   );
 
   const signOut = useCallback(() => {
-    setUser(null);
-    setIsAuth(false);
     removeAxiosAuthentication();
+    // キャッシュされたクエリデータを直接更新する。今回は'auth'キーのデータをnullに設定
+    // これにより、認証情報がクリアされ、再度ログインが必要になります。
+    queryClient.setQueryData(['auth'], null);
+    // invalidateQueries は、指定されたクエリキーに関連するすべてのクエリを無効化します。
+    // これにより、次回のクエリ実行時に最新のデータを取得するようになります。
+    // ここでは、'auth'と'todos'のクエリを無効化しています。
+    // これにより、認証情報がクリアされた後、次回のクエリ実行時に再度認証情報を取得するようになります。
+    // また、'todos'のクエリも無効化することで、ログアウト後に表示されるTodo一覧が最新の状態になるようにします。
+    // これにより、ログアウト後にTodo一覧が表示されなくなります。
+    queryClient.invalidateQueries({ queryKey: ['auth'] });
+    queryClient.invalidateQueries({ queryKey: ['todos'] });
     navigate(NAVIGATION_PATH.LOGIN);
-  }, [navigate]);
+  }, [navigate, queryClient]);
 
   const isExitBeforeAuthPage = useCallback(
     () =>
@@ -38,29 +54,20 @@ export const useAuth = () => {
     [pathname]
   );
 
-  const authRouting = useCallback(async () => {
-    let auth = false;
-    const response = await checkAuthentication();
-    if (response?.code === 200 && response.data) {
-      setUser(response.data.user);
-      setIsAuth(true);
-      auth = true;
-    }
+  useEffect(() => {
+    if (isLoading) return;
 
     // 未ログインでログイン後のページにいる場合、ログイン画面にリダイレクト
-    if (!auth && !isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.LOGIN);
+    if (!isAuth && !isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.LOGIN);
     // ログイン済で未ログインのページにいる場合、Todo一覧ページにリダイレクト
-    if (auth && isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.TOP);
-  }, [isExitBeforeAuthPage, navigate]);
-
-  useEffect(() => {
-    authRouting();
-  }, [authRouting]);
+    if (isAuth && isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.TOP);
+  }, [isAuth, isExitBeforeAuthPage, navigate, isLoading]);
 
   return {
     user,
     isAuth,
     signIn,
     signOut,
+    isLoading,
   };
 };

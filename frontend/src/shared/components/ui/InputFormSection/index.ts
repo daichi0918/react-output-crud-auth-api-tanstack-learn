@@ -1,1 +1,1 @@
-export * from "./InputFormSection";
+export * from './InputFormSection';

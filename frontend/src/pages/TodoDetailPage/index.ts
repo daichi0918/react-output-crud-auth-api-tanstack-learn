@@ -1,1 +1,1 @@
-export * from "./TodoDetailPage";
+export * from './TodoDetailPage';

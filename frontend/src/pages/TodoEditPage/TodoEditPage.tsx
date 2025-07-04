@@ -1,3 +1,10 @@
-import { TodoEditTemplate }  from "../../features/todos/components";
+import { TodoEditTemplate } from '../../features/todos/components';
+import { BaseLayout } from '../../shared/components/layouts';
 
-export const TodoEditPage = () => <TodoEditTemplate />;
+export const TodoEditPage = () => {
+  return (
+    <BaseLayout title={'TodoEdit'}>
+      <TodoEditTemplate />
+    </BaseLayout>
+  );
+};

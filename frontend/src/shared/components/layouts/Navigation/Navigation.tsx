@@ -1,7 +1,7 @@
-import { NavigationLink } from "../../ui/";
-import { NAVIGATION_PATH } from "../../../constants/navigation";
-import { useAuthContext } from "../../../../features/auth/hooks/useAuthContext";
-import styles from "./style.module.css";
+import { NavigationLink } from '../../ui/';
+import { NAVIGATION_PATH } from '../../../constants/navigation';
+import { useAuthContext } from '../../../../features/auth/hooks/useAuthContext';
+import styles from './style.module.css';
 
 export const Navigation = () => {
   const { signOut } = useAuthContext();
@@ -10,8 +10,8 @@ export const Navigation = () => {
       <h1 className={styles.title}>Todo List</h1>
       <nav className={styles.nav}>
         <ul className={styles.ul}>
-          <NavigationLink title={"Top"} linkPath={NAVIGATION_PATH.TOP} />
-          <NavigationLink title={"Create"} linkPath={NAVIGATION_PATH.CREATE} />
+          <NavigationLink title={'Top'} linkPath={NAVIGATION_PATH.TOP} />
+          <NavigationLink title={'Create'} linkPath={NAVIGATION_PATH.CREATE} />
           <li className={styles.li}>
             <button className={styles.button} onClick={() => signOut()}>
               SignOut

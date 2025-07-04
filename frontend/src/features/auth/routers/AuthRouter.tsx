@@ -1,6 +1,6 @@
-import { NAVIGATION_LIST } from "../../../shared/constants/navigation";
-import { Routes, Route } from "react-router";
-import { LoginPage, SignUpPage } from "../../../pages";
+import { NAVIGATION_LIST } from '../../../shared/constants/navigation';
+import { Routes, Route } from 'react-router';
+import { LoginPage, SignUpPage } from '../../../pages';
 
 export const AuthRouter = () => {
   return (

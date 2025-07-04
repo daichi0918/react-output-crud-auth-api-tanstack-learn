@@ -1,14 +1,17 @@
-import { FC } from "react";
-import { NavLink } from "react-router";
-import { Controller } from "react-hook-form";
+import { FC } from 'react';
+import { NavLink } from 'react-router';
+import { Controller } from 'react-hook-form';
 
-import { NAVIGATION_LIST } from "../../../../shared/constants/navigation";
+import { NAVIGATION_LIST } from '../../../../shared/constants/navigation';
 
-import { InputFormSection, CommonButton } from "../../../../shared/components/ui";
+import {
+  InputFormSection,
+  CommonButton,
+} from '../../../../shared/components/ui';
 
-import { useLoginTemplate } from "./useLoginTemplate";
+import { useLoginTemplate } from './useLoginTemplate';
 
-import styles from "./style.module.css";
+import styles from './style.module.css';
 
 export const LoginTemplate: FC = () => {
   const { control, errors, handleLoginSubmit } = useLoginTemplate();
@@ -46,7 +49,7 @@ export const LoginTemplate: FC = () => {
           />
         </div>
         <div className={styles.area}>
-          <CommonButton type="submit">{"Login"}</CommonButton>
+          <CommonButton type="submit">{'Login'}</CommonButton>
         </div>
         <div className={styles.link}>
           <NavLink to={NAVIGATION_LIST.SIGNUP}>&lt;&lt; to signup page</NavLink>

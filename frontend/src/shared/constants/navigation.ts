@@ -1,7 +1,7 @@
 /**
  * ベースPATH
  */
-export const BASE_PATH = "";
+export const BASE_PATH = '';
 
 /**
  * リンク先一覧

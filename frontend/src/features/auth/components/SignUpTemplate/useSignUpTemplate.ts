@@ -1,21 +1,21 @@
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useAuthContext } from "../../../auth/hooks/useAuthContext";
-
-import { register } from "../..//apis";
+import { useAuthContext } from '../../../auth/hooks/useAuthContext';
+import { useSignupMutation } from '../../hooks';
 
 const schema = z.object({
-  name: z.string().min(1, "1文字以上で入力してください"),
-  email: z.string().email("メールアドレスの形式で入力してください"),
-  password: z.string().min(8, "8文字以上で入力してください"),
-  password_confirmation: z.string().min(8, "8文字以上で入力してください"),
+  name: z.string().min(1, '1文字以上で入力してください'),
+  email: z.string().email('メールアドレスの形式で入力してください'),
+  password: z.string().min(8, '8文字以上で入力してください'),
+  password_confirmation: z.string().min(8, '8文字以上で入力してください'),
 });
 
 export const useSignUpTemplate = () => {
   const { signIn } = useAuthContext();
+  const signupMutation = useSignupMutation();
 
   const {
     control,
@@ -25,10 +25,10 @@ export const useSignUpTemplate = () => {
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      password_confirmation: "",
+      name: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
     },
   });
 
@@ -36,24 +36,33 @@ export const useSignUpTemplate = () => {
     useCallback(
       async (values: z.infer<typeof schema>) => {
         if (values.password !== values.password_confirmation) {
-          setError("password", {
-            type: "manual",
-            message: "確認用パスワードと一致しません",
+          setError('password', {
+            type: 'manual',
+            message: '確認用パスワードと一致しません',
           });
           return;
         }
         const { name, email, password } = values;
-        const res = await register(name, email, password);
-        if (res.code !== 201 || !res.data) {
-          setError("name", {
-            type: "manual",
-            message: res.message,
+        try {
+          const data = await signupMutation.mutateAsync({
+            name,
+            email,
+            password,
           });
-          return;
+          signIn(data.user, data.token);
+        } catch (error) {
+          setError('name', {
+            type: 'manual',
+            message:
+              (
+                error as unknown as {
+                  response?: { data?: { message?: string } };
+                }
+              ).response?.data?.message || '登録に失敗しました',
+          });
         }
-        signIn(res.data?.user, res.data?.token);
       },
-      [signIn, setError]
+      [signIn, setError, signupMutation]
     )
   );
 
@@ -61,5 +70,6 @@ export const useSignUpTemplate = () => {
     control,
     errors,
     handleRegisterSubmit,
+    isLoading: signupMutation.isPending,
   };
 };

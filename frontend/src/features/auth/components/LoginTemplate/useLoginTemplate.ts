@@ -1,19 +1,19 @@
-import { useCallback } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useAuthContext } from "../../../auth/hooks/useAuthContext";
-
-import { login } from "../../apis";
+import { useAuthContext } from '../../../auth/hooks/useAuthContext';
+import { useLoginMutation } from '../../hooks';
 
 const schema = z.object({
-  email: z.string().email("メールアドレスの形式で入力してください"),
-  password: z.string().min(8, "8文字以上で入力してください"),
+  email: z.string().email('メールアドレスの形式で入力してください'),
+  password: z.string().min(8, '8文字以上で入力してください'),
 });
 
 export const useLoginTemplate = () => {
   const { signIn } = useAuthContext();
+  const loginMutation = useLoginMutation();
 
   const {
     control,
@@ -23,26 +23,30 @@ export const useLoginTemplate = () => {
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
   const handleLoginSubmit = handleSubmit(
     useCallback(
       async (values: z.infer<typeof schema>) => {
-        const { email, password } = values;
-        const res = await login(email, password);
-        if (res.code !== 200 || !res.data) {
-          setError("email", {
-            type: "manual",
-            message: res.message,
+        try {
+          const data = await loginMutation.mutateAsync(values);
+          signIn(data.user, data.token);
+        } catch (error) {
+          setError('email', {
+            type: 'manual',
+            message:
+              (
+                error as unknown as {
+                  response?: { data?: { message?: string } };
+                }
+              ).response?.data?.message || 'ログインに失敗しました',
           });
-          return;
         }
-        signIn(res.data?.user, res.data?.token);
       },
-      [signIn, setError]
+      [signIn, setError, loginMutation]
     )
   );
 
@@ -50,5 +54,6 @@ export const useLoginTemplate = () => {
     control,
     errors,
     handleLoginSubmit,
+    isLoading: loginMutation.isPending,
   };
 };
