@@ -1,3 +1,11 @@
 import { TodoDetailTemplate } from '../../features/todos/components';
 
-export const TodoDetailPage = () => <TodoDetailTemplate />;
+import { BaseLayout } from '../../shared/components/layouts';
+
+export const TodoDetailPage = () => {
+  return (
+    <BaseLayout title={'TodoDetail'}>
+      <TodoDetailTemplate />
+    </BaseLayout>
+  );
+};

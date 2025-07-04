@@ -29,7 +29,7 @@ export const TodoListTemplate = () => {
       </div>
       {/* Todoリスト一覧表示 */}
       <div className={styles.area}>
-        {!isLoading && showTodoList.length > 0 && (
+        {showTodoList.length > 0 && (
           <TodoList todoList={showTodoList} onDeleteTodo={handleDeleteTodo} />
         )}
       </div>

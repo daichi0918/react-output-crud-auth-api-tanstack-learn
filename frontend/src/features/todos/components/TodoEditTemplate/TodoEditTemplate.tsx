@@ -13,5 +13,5 @@ export const TodoEditTemplate = () => {
     return <PuffLoader />;
   }
 
-  return <>{todo && <TodoEditForm todo={todo} />}</>;
+  return <>{!!todo && <TodoEditForm todo={todo} />}</>;
 };

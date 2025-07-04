@@ -1,24 +1,15 @@
-import { BaseLayout } from '../../../../shared/components/layouts';
-import { InputForm, TextArea } from '../../../../shared/components/ui';
-import { useTodoDetailTemplate } from './useTodoDetailTemplate';
-import styles from './style.module.css';
+import { useParams } from 'react-router';
+import { PuffLoader } from 'react-spinners';
+import { useTodoQuery } from '../../hooks';
+import { TodoDetailView } from '../TodoDetailView';
 
 export const TodoDetailTemplate = () => {
-  const { todo } = useTodoDetailTemplate();
+  const { id } = useParams();
+  const { data: todo, isLoading } = useTodoQuery(id || '');
 
-  return (
-    <BaseLayout title={'TodoDetail'}>
-      <div></div>
-      {!!todo && (
-        <div className={styles.container}>
-          <div className={styles.area}>
-            <InputForm disabled value={todo.title} placeholder={'Title'} />
-          </div>
-          <div className={styles.area}>
-            <TextArea disabled value={todo.content} placeholder={'Content'} />
-          </div>
-        </div>
-      )}
-    </BaseLayout>
-  );
+  if (isLoading) {
+    return <PuffLoader />;
+  }
+
+  return <>{!!todo && <TodoDetailView todo={todo} />}</>;
 };
