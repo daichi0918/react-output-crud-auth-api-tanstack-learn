@@ -7,7 +7,7 @@ WORKDIR /app
 COPY /backend /app
 
 RUN go mod tidy && \
-    go install github.com/air-verse/air@latest
+    go install github.com/air-verse/air@v1.62.0
 
 EXPOSE 4000
 
