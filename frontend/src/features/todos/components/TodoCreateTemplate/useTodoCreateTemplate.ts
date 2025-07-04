@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
 import { NAVIGATION_PATH } from "../../../../shared/constants/navigation";
 
-import { useCreateTodo } from "../../hooks/queries";
+import { useCreateTodo } from "../../hooks";
 
 const schema = z.object({
   title: z

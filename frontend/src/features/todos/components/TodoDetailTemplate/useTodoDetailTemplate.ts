@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { useTodo } from "../../hooks/queries";
+import { useTodo } from "../../hooks";
 
 export const useTodoDetailTemplate = () => {
   const { id } = useParams();

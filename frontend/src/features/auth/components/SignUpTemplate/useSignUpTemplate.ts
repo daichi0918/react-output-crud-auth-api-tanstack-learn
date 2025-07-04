@@ -4,7 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAuthContext } from "../../../auth/hooks/useAuthContext";
-import { useRegister } from "../../hooks/queries";
+import { useSignup } from "../../hooks";
 
 const schema = z.object({
   name: z.string().min(1, "1文字以上で入力してください"),
@@ -15,7 +15,7 @@ const schema = z.object({
 
 export const useSignUpTemplate = () => {
   const { signIn } = useAuthContext();
-  const registerMutation = useRegister();
+  const registerMutation = useSignup();
 
   const {
     control,

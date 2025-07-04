@@ -7,7 +7,7 @@ import {
   removeAxiosAuthentication,
 } from "../../../shared/apis/globalAxios"
 import { UserType } from "../../users/types";
-import { useCheckAuthentication } from "./queries";
+import { useCheckAuthentication } from "./";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const useAuth = () => {

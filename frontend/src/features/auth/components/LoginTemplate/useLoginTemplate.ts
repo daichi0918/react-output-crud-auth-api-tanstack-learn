@@ -4,7 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAuthContext } from "../../../auth/hooks/useAuthContext";
-import { useLogin } from "../../hooks/queries";
+import { useLogin } from "../../hooks";
 
 const schema = z.object({
   email: z.string().email("メールアドレスの形式で入力してください"),

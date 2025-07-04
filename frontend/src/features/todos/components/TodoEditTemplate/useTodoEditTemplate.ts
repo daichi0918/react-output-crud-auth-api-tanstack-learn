@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useTodo, useUpdateTodo } from "../../hooks/queries";
+import { useTodo, useUpdateTodo } from "../../hooks";
 import { NAVIGATION_PATH } from "../../../../shared/constants/navigation";
 
 const schema = z.object({
