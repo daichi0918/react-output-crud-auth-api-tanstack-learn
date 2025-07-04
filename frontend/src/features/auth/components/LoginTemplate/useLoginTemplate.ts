@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuthContext } from '../../../auth/hooks/useAuthContext';
-import { useLogin } from '../../hooks';
+import { useLoginMutation } from '../../hooks';
 
 const schema = z.object({
   email: z.string().email('メールアドレスの形式で入力してください'),
@@ -13,7 +13,7 @@ const schema = z.object({
 
 export const useLoginTemplate = () => {
   const { signIn } = useAuthContext();
-  const loginMutation = useLogin();
+  const loginMutation = useLoginMutation();
 
   const {
     control,

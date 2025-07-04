@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { checkAuthentication } from '../apis/auth';
 
-export const useCheckAuthentication = () => {
+export const useCheckAuthenticationQuery = () => {
   return useQuery({
     queryKey: ['auth'],
     queryFn: checkAuthentication,

@@ -1,4 +1,5 @@
 import { ReactNode, createContext, FC } from 'react';
+import { PuffLoader } from 'react-spinners';
 
 import { useAuth } from '../hooks/useAuth';
 import { UserType } from '../../users/types';
@@ -24,7 +25,12 @@ const AuthContext = createContext<AuthContextType>({
 export { AuthContext };
 
 export const AuthProvider: FC<AuthContextProps> = ({ children }) => {
-  const { user, isAuth, signIn, signOut } = useAuth();
+  const { user, isAuth, signIn, signOut, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <PuffLoader />;
+  }
+
   return (
     <AuthContext.Provider value={{ user, isAuth, signIn, signOut }}>
       {children}

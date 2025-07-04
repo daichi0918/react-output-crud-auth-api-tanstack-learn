@@ -4,7 +4,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuthContext } from '../../../auth/hooks/useAuthContext';
-import { useSignup } from '../../hooks';
+import { useSignupMutation } from '../../hooks';
 
 const schema = z.object({
   name: z.string().min(1, '1文字以上で入力してください'),
@@ -15,7 +15,7 @@ const schema = z.object({
 
 export const useSignUpTemplate = () => {
   const { signIn } = useAuthContext();
-  const registerMutation = useSignup();
+  const signupMutation = useSignupMutation();
 
   const {
     control,
@@ -44,7 +44,7 @@ export const useSignUpTemplate = () => {
         }
         const { name, email, password } = values;
         try {
-          const data = await registerMutation.mutateAsync({
+          const data = await signupMutation.mutateAsync({
             name,
             email,
             password,
@@ -62,7 +62,7 @@ export const useSignUpTemplate = () => {
           });
         }
       },
-      [signIn, setError, registerMutation]
+      [signIn, setError, signupMutation]
     )
   );
 
@@ -70,6 +70,6 @@ export const useSignUpTemplate = () => {
     control,
     errors,
     handleRegisterSubmit,
-    isLoading: registerMutation.isPending,
+    isLoading: signupMutation.isPending,
   };
 };

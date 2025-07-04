@@ -10,14 +10,14 @@ import {
   removeAxiosAuthentication,
 } from '../../../shared/apis/globalAxios';
 import { UserType } from '../../users/types';
-import { useCheckAuthentication } from './';
+import { useCheckAuthenticationQuery } from './';
 import { useQueryClient } from '@tanstack/react-query';
 
 export const useAuth = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const queryClient = useQueryClient();
-  const { data: authData, isLoading } = useCheckAuthentication();
+  const { data: authData, isLoading } = useCheckAuthenticationQuery();
 
   const user = authData?.user || null;
   const isAuth = !!authData?.user;
