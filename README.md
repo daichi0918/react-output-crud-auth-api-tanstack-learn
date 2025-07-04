@@ -141,7 +141,7 @@ password: password
 ```
 DBMS: Postgres
 host: 127.0.0.1
-database: REACT_OUTPUT_CRUD_AUTH_API_FEATURES_DB
+database: REACT_OUTPUT_CRUD_AUTH_API_TANSTACK_DB
 user: user
 password: pass
 port: 5432
