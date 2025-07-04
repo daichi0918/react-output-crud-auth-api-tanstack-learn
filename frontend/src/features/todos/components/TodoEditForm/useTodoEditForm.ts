@@ -33,7 +33,7 @@ export const useTodoEditForm = ({ todo }: UseTodoEditFormParam) => {
     setError,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: { title: '', content: '' },
+    defaultValues: { title: todo.title, content: todo.content },
   });
 
   const handleEditSubmit = handleSubmit(
