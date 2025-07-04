@@ -32,6 +32,7 @@ export const useAuth = () => {
     removeAxiosAuthentication();
     queryClient.setQueryData(["auth"], null);
     queryClient.invalidateQueries({ queryKey: ["auth"] });
+    queryClient.invalidateQueries({ queryKey: ["todos"] });
     navigate(NAVIGATION_PATH.LOGIN);
   }, [navigate, queryClient]);
 
