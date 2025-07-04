@@ -1,17 +1,20 @@
 import { Controller } from "react-hook-form";
+import { PuffLoader} from "react-spinners";
 import { InputFormSection }  from "../../../../shared/components/ui";
 import { TodoList } from "../TodoList";
-import { BaseLayout } from "../../../../shared/components/layouts";
 
 import { useTodoListTemplate } from "./useTodoListTemplate";
 
 import styles from "./style.module.css";
 
 export const TodoListTemplate = () => {
-  const { control, showTodoList, handleDeleteTodo } = useTodoListTemplate();
+  const { control, showTodoList, handleDeleteTodo, isLoading } = useTodoListTemplate();
+  
+  if (isLoading) {
+    return  <PuffLoader />
+  }
 
   return (
-    <BaseLayout title={"TodoList"}>
       <div className={styles.container}>
         {/* Todo検索フォームエリア */}
         <div className={styles.area}>
@@ -25,11 +28,10 @@ export const TodoListTemplate = () => {
         </div>
         {/* Todoリスト一覧表示 */}
         <div className={styles.area}>
-          {showTodoList.length > 0 && (
+          {!isLoading && showTodoList.length > 0 && (
             <TodoList todoList={showTodoList} onDeleteTodo={handleDeleteTodo} />
           )}
         </div>
       </div>
-    </BaseLayout>
   );
 };
