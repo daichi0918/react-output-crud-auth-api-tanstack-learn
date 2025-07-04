@@ -12,6 +12,7 @@
 - zod: 3.24.2
 - @hookform/resolvers: 4.0.0
 - axios: 1.7.9
+- @tanstack/react-query: 5.81.5
 - @fortawesome/react-fontawesom: 0.2.0
 - @fortawesome/free-solid-svg-icons: 6.2.0
 

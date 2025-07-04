@@ -1,22 +1,9 @@
 import { useParams } from "react-router";
-import { useCallback, useState, useEffect } from "react";
-import { getTodo } from "../../apis";
-import { TodoType } from "../../types/todo";
+import { useTodo } from "../../hooks/queries";
 
 export const useTodoDetailTemplate = () => {
   const { id } = useParams();
-  const [todo, setTodo] = useState<TodoType | null>(null);
+  const { data: todo, isLoading } = useTodo(id || "");
 
-  const fetchTodo = useCallback(async () => {
-    if (!id) return;
-    const response = await getTodo({ id });
-    if (!response.data) return;
-    setTodo(response.data);
-  }, [id]);
-
-  useEffect(() => {
-    fetchTodo();
-  }, [fetchTodo]);
-
-  return { todo };
+  return { todo, isLoading };
 };

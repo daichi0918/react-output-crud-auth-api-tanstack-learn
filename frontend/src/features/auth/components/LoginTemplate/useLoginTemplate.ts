@@ -4,8 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAuthContext } from "../../../auth/hooks/useAuthContext";
-
-import { login } from "../../apis";
+import { useLogin } from "../../hooks/queries";
 
 const schema = z.object({
   email: z.string().email("メールアドレスの形式で入力してください"),
@@ -14,6 +13,7 @@ const schema = z.object({
 
 export const useLoginTemplate = () => {
   const { signIn } = useAuthContext();
+  const loginMutation = useLogin();
 
   const {
     control,
@@ -31,18 +31,17 @@ export const useLoginTemplate = () => {
   const handleLoginSubmit = handleSubmit(
     useCallback(
       async (values: z.infer<typeof schema>) => {
-        const { email, password } = values;
-        const res = await login(email, password);
-        if (res.code !== 200 || !res.data) {
+        try {
+          const data = await loginMutation.mutateAsync(values);
+          signIn(data.user, data.token);
+        } catch (error) {
           setError("email", {
             type: "manual",
-            message: res.message,
+            message: (error as unknown as {response?: {data?: {message?: string}}}).response?.data?.message || "ログインに失敗しました",
           });
-          return;
         }
-        signIn(res.data?.user, res.data?.token);
       },
-      [signIn, setError]
+      [signIn, setError, loginMutation]
     )
   );
 
@@ -50,5 +49,6 @@ export const useLoginTemplate = () => {
     control,
     errors,
     handleLoginSubmit,
+    isLoading: loginMutation.isPending,
   };
 };

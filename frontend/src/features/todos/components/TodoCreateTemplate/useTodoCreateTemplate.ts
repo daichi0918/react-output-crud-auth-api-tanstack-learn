@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
 import { NAVIGATION_PATH } from "../../../../shared/constants/navigation";
 
-import { createTodo } from "../../apis";
+import { useCreateTodo } from "../../hooks/queries";
 
 const schema = z.object({
   title: z
@@ -17,11 +17,13 @@ const schema = z.object({
 
 export const useTodoCreateTemplate = () => {
   const navigate = useNavigate();
+  const createMutation = useCreateTodo();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: { title: "", content: "" },
@@ -30,13 +32,20 @@ export const useTodoCreateTemplate = () => {
   const handleAddSubmit = handleSubmit(
     useCallback(
       async (values: z.infer<typeof schema>) => {
-        await createTodo({
-          title: values.title,
-          content: values.content,
-        });
-        navigate(NAVIGATION_PATH.TOP);
+        try {
+          await createMutation.mutateAsync({
+            title: values.title,
+            content: values.content,
+          });
+          navigate(NAVIGATION_PATH.TOP);
+        } catch (error) {
+          setError("title", {
+            type: "manual",
+            message: (error as unknown as {response?: {data?: {message?: string}}}).response?.data?.message || "作成に失敗しました",
+          });
+        }
       },
-      [navigate]
+      [navigate, createMutation, setError]
     )
   );
 
@@ -44,5 +53,6 @@ export const useTodoCreateTemplate = () => {
     control,
     errors,
     handleAddSubmit,
+    isLoading: createMutation.isPending,
   };
 };

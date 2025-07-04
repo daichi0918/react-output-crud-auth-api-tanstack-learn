@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { getTodo, updateTodo } from "../../apis";
+import { useTodo, useUpdateTodo } from "../../hooks/queries";
 import { NAVIGATION_PATH } from "../../../../shared/constants/navigation";
 
 const schema = z.object({
@@ -18,47 +18,54 @@ const schema = z.object({
 export const useTodoEditTemplate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { data: todo, isLoading } = useTodo(id || "");
+  const updateMutation = useUpdateTodo();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: { title: "", content: "" },
   });
 
-  const fetchTodo = useCallback(async () => {
-    if (!id) return;
-    const response = await getTodo({ id });
-    if (!response.data) return;
-    setValue("title", response.data.title);
-    setValue("content", response.data.content);
-  }, [id, setValue]);
+  useEffect(() => {
+    if (todo) {
+      setValue("title", todo.title);
+      setValue("content", todo.content);
+    }
+  }, [todo, setValue]);
 
   const handleEditSubmit = handleSubmit(
     useCallback(
       async (values: z.infer<typeof schema>) => {
         if (!id) return;
-        await updateTodo({
-          id,
-          title: values.title,
-          content: values.content,
-        });
-        navigate(NAVIGATION_PATH.TOP);
+        try {
+          await updateMutation.mutateAsync({
+            id,
+            title: values.title,
+            content: values.content,
+          });
+          navigate(NAVIGATION_PATH.TOP);
+        } catch (error) {
+          setError("title", {
+            type: "manual",
+            message: (error as unknown as {response?: {data?: {message?: string}}}).response?.data?.message || "更新に失敗しました",
+          });
+        }
       },
-      [navigate, id]
+      [navigate, id, updateMutation, setError]
     )
   );
-
-  useEffect(() => {
-    fetchTodo();
-  }, [fetchTodo]);
 
   return {
     control,
     errors,
     handleEditSubmit,
+    isLoading,
+    isSaving: updateMutation.isPending,
   };
 };

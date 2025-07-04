@@ -1,82 +1,28 @@
-import globalAxios, { isAxiosError } from "../../../shared/apis/globalAxios";
-
+import globalAxios from "../../../shared/apis/globalAxios";
 import { AuthType } from "../types";
-import { IErrorResponse, ResponseType } from "../../../shared/types/ApiResponse";
 
-export const login = async (email: string, password: string) => {
-  try {
-    const response = await globalAxios.post<AuthType>("/auth/login", {
-      email,
-      password,
-    });
-    const res: ResponseType<AuthType> = {
-      code: response.status,
-      data: response.data,
-    };
-
-    return res;
-  } catch (error) {
-    const res: ResponseType = {
-      code: 500,
-      message: error as string,
-    };
-    if (isAxiosError(error)) {
-      const axiosError = error as IErrorResponse;
-      res.code = axiosError.response.status;
-      res.message = axiosError.response.data.message;
-    }
-    return res;
-  }
+export const login = async (email: string, password: string): Promise<AuthType> => {
+  const response = await globalAxios.post<AuthType>("/auth/login", {
+    email,
+    password,
+  });
+  return response.data;
 };
 
 export const register = async (
   name: string,
   email: string,
   password: string
-) => {
-  try {
-    const response = await globalAxios.post<AuthType>("/auth/signup", {
-      name,
-      email,
-      password,
-    });
-    const res: ResponseType<AuthType> = {
-      code: response.status,
-      data: response.data,
-    };
-    return res;
-  } catch (error) {
-    const res: ResponseType = {
-      code: 500,
-      message: error as string,
-    };
-    if (isAxiosError(error)) {
-      const axiosError = error as IErrorResponse;
-      res.code = axiosError.response.status;
-      res.message = axiosError.response.data.message;
-    }
-    return res;
-  }
+): Promise<AuthType> => {
+  const response = await globalAxios.post<AuthType>("/auth/signup", {
+    name,
+    email,
+    password,
+  });
+  return response.data;
 };
 
-export const checkAuthentication = async () => {
-  try {
-    const response = await globalAxios.post<AuthType>("/auth/authentication");
-    const res: ResponseType<AuthType> = {
-      code: response.status,
-      data: response.data,
-    };
-    return res;
-  } catch (error) {
-    const res: ResponseType = {
-      code: 500,
-      message: error as string,
-    };
-    if (isAxiosError(error)) {
-      const axiosError = error as IErrorResponse;
-      res.code = axiosError.response.status;
-      res.message = axiosError.response.data.message;
-    }
-    return res;
-  }
+export const checkAuthentication = async (): Promise<AuthType> => {
+  const response = await globalAxios.post<AuthType>("/auth/authentication");
+  return response.data;
 };

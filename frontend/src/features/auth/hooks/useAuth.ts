@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 import { NAVIGATION_PATH, NAVIGATION_LIST } from "../../../shared/constants/navigation";
@@ -6,31 +6,34 @@ import {
   setAxiosAuthentication,
   removeAxiosAuthentication,
 } from "../../../shared/apis/globalAxios"
-import { checkAuthentication } from "../apis/auth";
 import { UserType } from "../../users/types";
+import { useCheckAuthentication } from "./queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useAuth = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [user, setUser] = useState<UserType | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { data: authData, isLoading } = useCheckAuthentication();
+
+  const user = authData?.user || null;
+  const isAuth = !!authData?.user;
 
   const signIn = useCallback(
     (user: UserType, token: string) => {
-      setUser(user);
-      setIsAuth(true);
       setAxiosAuthentication(token);
+      queryClient.setQueryData(["auth"], { user, token });
       navigate(NAVIGATION_PATH.TOP);
     },
-    [navigate]
+    [navigate, queryClient]
   );
 
   const signOut = useCallback(() => {
-    setUser(null);
-    setIsAuth(false);
     removeAxiosAuthentication();
+    queryClient.setQueryData(["auth"], null);
+    queryClient.invalidateQueries({ queryKey: ["auth"] });
     navigate(NAVIGATION_PATH.LOGIN);
-  }, [navigate]);
+  }, [navigate, queryClient]);
 
   const isExitBeforeAuthPage = useCallback(
     () =>
@@ -38,29 +41,20 @@ export const useAuth = () => {
     [pathname]
   );
 
-  const authRouting = useCallback(async () => {
-    let auth = false;
-    const response = await checkAuthentication();
-    if (response?.code === 200 && response.data) {
-      setUser(response.data.user);
-      setIsAuth(true);
-      auth = true;
-    }
+  useEffect(() => {
+    if (isLoading) return;
 
     // 未ログインでログイン後のページにいる場合、ログイン画面にリダイレクト
-    if (!auth && !isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.LOGIN);
+    if (!isAuth && !isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.LOGIN);
     // ログイン済で未ログインのページにいる場合、Todo一覧ページにリダイレクト
-    if (auth && isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.TOP);
-  }, [isExitBeforeAuthPage, navigate]);
-
-  useEffect(() => {
-    authRouting();
-  }, [authRouting]);
+    if (isAuth && isExitBeforeAuthPage()) navigate(NAVIGATION_LIST.TOP);
+  }, [isAuth, isExitBeforeAuthPage, navigate, isLoading]);
 
   return {
     user,
     isAuth,
     signIn,
     signOut,
+    isLoading,
   };
 };

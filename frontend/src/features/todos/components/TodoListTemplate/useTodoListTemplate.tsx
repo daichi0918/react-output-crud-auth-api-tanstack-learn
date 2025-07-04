@@ -1,17 +1,17 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { getTodos, deleteTodo } from "../../apis";
-import { TodoType } from "../../types/todo";
+import { useTodos, useDeleteTodo } from "../../hooks/queries";
 
 const schema = z.object({
   keyword: z.string(),
 });
 
 export const useTodoListTemplate = () => {
-  const [todoList, setTodoList] = useState<Array<TodoType>>([]);
+  const { data: todoData, isLoading } = useTodos();
+  const deleteMutation = useDeleteTodo();
 
   const { control, watch } = useForm({
     resolver: zodResolver(schema),
@@ -21,8 +21,10 @@ export const useTodoListTemplate = () => {
 
   /* 表示用TodoList */
   const showTodoList = useMemo(() => {
+    if (!todoData?.todos) return [];
+    
     const regexp = new RegExp("^" + searchKeyword, "i");
-    return todoList.filter((todo) => {
+    return todoData.todos.filter((todo) => {
       // 検索キーワードに部分一致したTodoだけを一覧表示する
       return todo.title.match(regexp);
     });
@@ -30,28 +32,19 @@ export const useTodoListTemplate = () => {
     // originTodoListとsearchKeywordの値が変更される度にfilterの検索処理が実行
     // ただし結果が前回と同じならキャッシュを返却し処理は実行されない(無駄な処理を省いている)
     // 詳しくはuseMemoを調べてください。
-  }, [todoList, searchKeyword]);
-
-  const fetchTodoList = useCallback(async () => {
-    const response = await getTodos();
-    if (!response?.data) return;
-    setTodoList(response.data.todos);
-  }, []);
+  }, [todoData?.todos, searchKeyword]);
 
   const handleDeleteTodo = useCallback((id: string, title: string) => {
     if (window.confirm(`「${title}」のtodoを削除しますか？`)) {
-      deleteTodo({ id });
-      setTodoList((prev) => prev.filter((todo) => todo.id !== id));
+      deleteMutation.mutate({ id });
     }
-  }, []);
-
-  useEffect(() => {
-    fetchTodoList();
-  }, [fetchTodoList]);
+  }, [deleteMutation]);
 
   return {
     control,
     showTodoList,
     handleDeleteTodo,
+    isLoading,
+    isDeleting: deleteMutation.isPending,
   };
 };
