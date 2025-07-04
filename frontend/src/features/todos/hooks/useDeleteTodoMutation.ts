@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTodo } from '../apis/todo';
 import { DeleteTodoRequest } from '../types';
 
-export const useDeleteTodo = () => {
+export const useDeleteTodoMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

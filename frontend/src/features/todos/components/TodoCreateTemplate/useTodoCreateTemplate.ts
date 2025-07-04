@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';
 import { NAVIGATION_PATH } from '../../../../shared/constants/navigation';
 
-import { useCreateTodo } from '../../hooks';
+import { useCreateTodoMutation } from '../../hooks';
 
 const schema = z.object({
   title: z
@@ -17,7 +17,7 @@ const schema = z.object({
 
 export const useTodoCreateTemplate = () => {
   const navigate = useNavigate();
-  const createMutation = useCreateTodo();
+  const createMutation = useCreateTodoMutation();
 
   const {
     control,

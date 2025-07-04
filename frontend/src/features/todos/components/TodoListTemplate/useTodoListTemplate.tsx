@@ -3,15 +3,15 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useTodoList, useDeleteTodo } from '../../hooks';
+import { useTodoListQuery, useDeleteTodoMutation } from '../../hooks';
 
 const schema = z.object({
   keyword: z.string(),
 });
 
 export const useTodoListTemplate = () => {
-  const { data: todoData, isLoading } = useTodoList();
-  const deleteMutation = useDeleteTodo();
+  const { data: todoData, isLoading } = useTodoListQuery();
+  const deleteMutation = useDeleteTodoMutation();
 
   const { control, watch } = useForm({
     resolver: zodResolver(schema),

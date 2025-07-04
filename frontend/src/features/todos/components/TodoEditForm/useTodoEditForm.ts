@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useUpdateTodo } from '../../hooks';
+import { useUpdateTodoMutation } from '../../hooks';
 import { NAVIGATION_PATH } from '../../../../shared/constants/navigation';
 
 import { TodoType } from '../../types';
@@ -24,7 +24,7 @@ type UseTodoEditFormParam = {
 export const useTodoEditForm = ({ todo }: UseTodoEditFormParam) => {
   const navigate = useNavigate();
 
-  const updateMutation = useUpdateTodo();
+  const updateMutation = useUpdateTodoMutation();
 
   const {
     control,
