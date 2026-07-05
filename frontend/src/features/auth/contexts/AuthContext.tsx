@@ -1,0 +1,39 @@
+import { type ReactNode, createContext, type FC } from 'react';
+import { PuffLoader } from 'react-spinners';
+
+import { useAuth } from '../hooks/useAuth';
+import type { UserType } from '../../users/types';
+
+type AuthContextProps = {
+  children: ReactNode;
+};
+
+type AuthContextType = {
+  user: UserType | null;
+  isAuth: boolean;
+  signIn: (user: UserType, token: string) => void;
+  signOut: () => void;
+};
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAuth: false,
+  signIn: () => {},
+  signOut: () => {},
+});
+
+export { AuthContext };
+
+export const AuthProvider: FC<AuthContextProps> = ({ children }) => {
+  const { user, isAuth, signIn, signOut, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <PuffLoader />;
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, isAuth, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
