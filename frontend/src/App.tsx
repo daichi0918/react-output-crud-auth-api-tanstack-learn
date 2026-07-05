@@ -3,12 +3,22 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import { useCheckAuthenticationQuery } from './features/auth/hooks'
 
 function App() {
   const [count, setCount] = useState(0)
+  // ステージ5の動作確認用の仮実装。後でAuthContext/Routerに置き換える
+  const { data, error, isLoading, isFetching } = useCheckAuthenticationQuery()
 
   return (
     <>
+      <pre style={{ background: '#eee', padding: '8px', textAlign: 'left' }}>
+        {JSON.stringify(
+          { isLoading, isFetching, data, error: error?.message },
+          null,
+          2
+        )}
+      </pre>
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
